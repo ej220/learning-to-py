@@ -42,23 +42,19 @@ def start_game(name, gamesplayed, playerwins, computerwins):
             break
         else:
             print('Pick again, I did not understand that.')
-    print("")
-    print("OK. Nice choice.")
+    print("\nOK. Nice choice.")
     print("...")
-    print("Let's get this game started!")
-    print("")
+    print("Let's get this game started!\n")
     gameboard = {'top-L' : " ", 'top-M' : " ", 'top-R' : " ",
                  'mid-L' : " ", 'mid-M' : " ", 'mid-R' : " ",
                  'low-L' : " ", 'low-M' : " ", 'low-R' : " ",
                  }
     boardprint(gameboard)
-    print("")
     firstgo = random.choice(['player', 'computer'])
     if firstgo == 'player':
-        print('You go first.')
+        print('\nYou go first.\n')
     else:
-        print('I will go first.')
-    print("")
+        print('\nI will go first.\n')
     playerwins, computerwins = game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwins)
     return(gamesplayed, playerwins, computerwins)
 
@@ -67,9 +63,7 @@ def game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwin
     win = False
     if firstgo == 'player':
         while True:
-            print("")
-            print("Your go...")
-            print("")
+            print("\nYour go...\n")
             time.sleep(1)
             turn = 'player'
             usergo(gameboard, usertoken, turn)
@@ -78,9 +72,7 @@ def game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwin
             if win == True or goes == 9:
                 break
             time.sleep(1)
-            print("")
-            print("My go...")
-            print("")
+            print("\nMy go...\n")
             time.sleep(1)
             turn = 'computer'
             pygo(gameboard, pytoken, turn)
@@ -90,9 +82,7 @@ def game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwin
                 break
     else:
         while win != True:
-            print("")
-            print("My go...")
-            print("")
+            print("\nMy go...\n")
             time.sleep(1)
             turn = 'computer'
             pygo(gameboard, pytoken, turn)
@@ -100,9 +90,7 @@ def game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwin
             win = wincheck(gameboard, win)
             if win == True or goes == 9:
                 break
-            print("")
-            print("Your go...")
-            print("")
+            print("\nYour go...\n")
             time.sleep(1)
             turn = 'player'
             usergo(gameboard, usertoken, turn)
@@ -111,26 +99,22 @@ def game(gameboard, usertoken, pytoken, firstgo, player, playerwins, computerwin
             if win == True or goes == 9:
                 break
             time.sleep(1)
-    if win == True:
-        if goes % 2 != 0 and firstgo == 'player':
-            print('Congratulations ' + player + '. Maybe we can play again?')
-            playerwins += 1
-        elif goes % 2 == 0 and firstgo == 'computer':
-            print('Congratulations ' + player + '. Maybe we can play again?')
-            playerwins += 1
-        else:
-            print('I won. Suck it!')
-            computerwins += 1
+    if win == True and turn == 'player':
+        print(f'Congratulations {player}, maybe we can play again?')
+        playerwins += 1
+    elif win == True and turn == 'computer':
+        print('I won. Suck it!')
+        computerwins += 1
     elif goes == 9:
         print('Ran out of turns. It is a stalemate.')
     return(playerwins, computerwins)
 
 def boardprint(x):
-    print(' ' + str(x['top-L']) + ' | ' + str(x['top-M']) + ' | ' + str(x['top-R']) + ' ')
+    print(f" {x['top-L']} | {x['top-M']} | {x['top-R']} ")
     print('-----------')
-    print(' ' + str(x['mid-L']) + ' | ' + str(x['mid-M']) + ' | ' + str(x['mid-R']) + ' ')
+    print(f" {x['mid-L']} | {x['mid-M']} | {x['mid-R']} ")
     print('-----------')
-    print(' ' + str(x['low-L']) + ' | ' + str(x['low-M']) + ' | ' + str(x['low-R']) + ' ')
+    print(f" {x['low-L']} | {x['low-M']} | {x['low-R']} ")
 
 def usergo(gameboard, usertoken, turn):
     print("Where would you like to go? ('top-', 'mid-', 'low-' with 'L', 'M' or 'R')")
@@ -138,7 +122,7 @@ def usergo(gameboard, usertoken, turn):
         pos = input()
         goodrow = ["top-", 'mid-', 'low-']
         goodcol = ['L', 'M', 'R']
-        if pos[:3] not in goodrow and pos[-1] not in goodcol:
+        if pos[:4] not in goodrow or pos[-1] not in goodcol or len(pos) != 5:
             print('I did not understand that. Please try again.')
         elif spacecheck(gameboard, pos, usertoken, turn) == True:
             break
@@ -146,7 +130,6 @@ def usergo(gameboard, usertoken, turn):
 def pygo(gameboard, pytoken, turn):
     while True:
         pos = random.choice(['top-', 'mid-', 'low-']) + random.choice(['L', 'R', 'M'])
-        #print(pos)
         if spacecheck(gameboard, pos, pytoken, turn) == True:
             break
     return
