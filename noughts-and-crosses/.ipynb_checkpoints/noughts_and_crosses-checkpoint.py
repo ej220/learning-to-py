@@ -128,12 +128,35 @@ def usergo(gameboard, usertoken, turn):
             break
         
 def pygo(gameboard, pytoken, turn):
-    while True:
-        pos = random.choice(['top-', 'mid-', 'low-']) + random.choice(['L', 'R', 'M'])
-        if spacecheck(gameboard, pos, pytoken, turn) == True:
-            break
+    hotpicks = goodmoves(gameboard)
+    if len(hotpicks) > 0:
+        quickwin, pos = instawin(gameboard, hotpicks, pytoken)
+        print(quickwin)
+        if quickwin == False:
+            pos = random.choice(hotpicks)
+    else:
+        while True:
+            pos = random.choice(['top-', 'mid-', 'low-']) + random.choice(['L', 'R', 'M'])
+            if gameboard[pos] == " ":
+                break
+    gameboard[pos] = pytoken
+    boardprint(gameboard)
     return
 
+def instawin(gameboard, hotpicks, pytoken):
+    for pos in hotpicks:
+        win = False
+        gameboard[pos] = pytoken
+        win = wincheck(gameboard, win)
+        gameboard[pos] = " "
+        if win == True:
+            break
+    if win == True:
+        return(True, pos)
+    else:
+        return(False, "")
+        
+        
 def spacecheck(gameboard, pos, token, turn):
     if gameboard[pos] == " ":
         gameboard[pos] = token
@@ -160,5 +183,37 @@ def wincheck(gameboard, win):
         if gameboard['mid-M'] == gameboard['low-L'] and gameboard['mid-M'] == gameboard['top-R']:
             win = True
     return(win)
+
+def goodmoves(gameboard):
+    candidates = []
+    
+    # top row good moves - identify if there is a space where 2 of 3 is present
+    if gameboard['top-M'] == gameboard['top-R'] and gameboard['top-M'] != " " or gameboard['mid-M'] == gameboard['low-R'] and gameboard['mid-M'] != " " or gameboard['mid-L'] == gameboard['low-L'] and gameboard['mid-L'] != " ":
+        candidates.append('top-L')
+    if gameboard['top-L'] == gameboard['top-R'] and gameboard['top-L'] != " " or gameboard['mid-M'] == gameboard['low-M'] and gameboard['mid-M'] != " ":
+        candidates.append('top-M')
+    if gameboard['top-M'] == gameboard['top-L'] and gameboard['top-M'] != " " or gameboard['mid-M'] == gameboard['low-L'] and gameboard['mid-M'] != " " or gameboard['mid-R'] == gameboard['low-R'] and gameboard['mid-R'] != " ":
+        candidates.append('top-R')
+        
+    # mid row good moves - identify if there is a space where 2 of 3 is present
+    if gameboard['mid-M'] == gameboard['mid-R'] and gameboard['mid-M'] != " " or gameboard['top-L'] == gameboard['low-L'] and gameboard['top-L'] != " ":
+        candidates.append('mid-L')
+    if gameboard['mid-L'] == gameboard['mid-R'] and gameboard['mid-L'] != " " or gameboard['top-M'] == gameboard['low-M'] and gameboard['top-M'] != " " or gameboard['top-L'] == gameboard['low-R'] and gameboard['top-L'] != " " or gameboard['top-R'] == gameboard['low-L'] and gameboard['top-R'] != " ":
+        candidates.append('mid-M')
+    if gameboard['mid-M'] == gameboard['mid-L'] and gameboard['mid-M'] != " " or gameboard['top-R'] == gameboard['low-R'] and gameboard['top-R'] != " ":
+        candidates.append('mid-R')
+    
+    # bottom row good moves
+    if gameboard['low-M'] == gameboard['low-R'] and gameboard['low-M'] != " " or gameboard['mid-M'] == gameboard['top-R'] and gameboard['mid-M'] != " " or gameboard['mid-L'] == gameboard['top-L'] and gameboard['mid-L'] != " ":
+        candidates.append('low-L')
+    if gameboard['low-L'] == gameboard['low-R'] and gameboard['low-L'] != " " or gameboard['mid-M'] == gameboard['top-M'] and gameboard['mid-M'] != " ":
+        candidates.append('low-M')
+    if gameboard['low-M'] == gameboard['low-L'] and gameboard['low-M'] != " " or gameboard['mid-M'] == gameboard['top-L'] and gameboard['mid-M'] != " " or gameboard['mid-R'] == gameboard['top-R'] and gameboard['mid-R'] != " ":
+        candidates.append('low-R')
+    goodmoves = []
+    for move in candidates:
+        if gameboard[move] == " ":
+            goodmoves.append(move)
+    return(goodmoves)
 
 greeter()
