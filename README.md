@@ -7,7 +7,9 @@ Contains the workbooks I used to follow along the well known Udemy course that f
 
 ### hangman
 
-First game! Contains a hangman game. It's really scrappy, and I got pretty loosey-goosey with global variables...
+v1 - First game! Contains a hangman game. It's really scrappy, and I got pretty loosey-goosey with global variables...
+
+v2 - Updated game. No more global variables, better handling of user inputs, and drawing of ascii hangman.
 
 ### noughts-and-crosses
 
